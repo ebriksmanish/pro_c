@@ -7,38 +7,24 @@ const userModel = require('../models/schema');
 // requiring bcrypt
 const bcrypt = require('bcrypt');
 
-// define the home page route
-// router.get('/', function (req, res) {
-//   res.send('Birds home page')
-// })
-// define the about route
 router.post('/register', function (req, res) {
     bcrypt.hash(req.body.password, 10, function(err, hash) {
-        // Store hash in your password DB.\
-        let value = {
-            username : req.body.username,
-            email : req.body.email,
-            password : hash
-        };
-        userModel.create(value, (err, result) => {
-            if(err) return res.json('err')
-            else return res.json('saved')
-        })
-      });
-});
+        if(err) return res.json(err)
+        else{
 
-router.post('/register', function (req, res) {
-    bcrypt.hash(req.body.password, 10, function(err, hash) {
-        // Store hash in your password DB.\
+                    // Store hash in your password DB.\
         let value = {
             username : req.body.username,
             email : req.body.email,
             password : hash
         };
         userModel.create(value, (err, result) => {
-            if(err) return res.json('err')
-            else return res.json('saved')
+            if(err) return res.json(err)
+            else return res.json(result)
         })
+
+        }
+
       });
 });
 
@@ -50,12 +36,12 @@ router.post('/login', function (req, res) {
         if(err) {
             return res.json(err)
         }
-        else {
-            bcrypt.compare(req.body.password, result.password, function(err, results) {
+        else{
+            bcrypt.compare(req.body.password, result.password, function(err, records) {
                 // res == true
-            if(err) return res.json(err)            
+            if(records)  return res.json(result)            
             else{
-                return res.json({results : result})
+                return res.json(err)
             }
             });
         }
